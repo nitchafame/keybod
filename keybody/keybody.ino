@@ -2,7 +2,7 @@
 /* ---------------------------
 ---------------------------
      Project Body Keyboard 
-     code by Nitcha Fame Tothong x firmread
+     code by nitchafame x firmread
      ---------------------------
 --------------------------- */ 
 
@@ -113,7 +113,7 @@ void loop() {
   // lean out
   else {
     bDidType = false;
-    // TODO: some feedback loops here
+    setLedMode(0);
     //      Keyboard.println("Good");
   }
   
@@ -126,7 +126,7 @@ void loop() {
   
   ledUpdate();
   
-  keyboardCapPin();
+  //keyboardCapPin();
   
   printCap();
   //printCapDebug();
