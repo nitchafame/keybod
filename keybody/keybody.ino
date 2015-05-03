@@ -69,7 +69,7 @@ uint16_t currtouched = 0;
 #define NUMPIXELS      1
 #define PIN            4
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-
+int ledMode = 0;
 
 
 
@@ -100,9 +100,7 @@ void loop() {
       leanCount++;
      
       // led notice
-      pixels.setPixelColor(0, pixels.Color(150, 0, 0)); // Moderately bright red color.
-      pixels.show(); // This sends the updated pixel color to the hardware.
-      delay(delayval); // Delay for a period of time (in milliseconds).
+      setLedMode(1);
       
       // keyboard out notice
       Keyboard.print("You just leaned ");
@@ -121,20 +119,17 @@ void loop() {
   
   // led start after 3 leans
   if (leanCount > 3) {
-    pixels.setPixelColor(0, pixels.Color(150, 150, 150)); // Moderately bright green color.
-    pixels.show(); // This sends the updated pixel color to the hardware.
-    delay(delayval); // Delay for a period of time (in milliseconds).
+    setLedMode(2);
   } else {
 
   }
   
+  ledUpdate();
+  
   keyboardCapPin();
-  
-  
   
   printCap();
   //printCapDebug();
-  printCap();
 }
 
 
