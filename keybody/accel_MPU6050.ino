@@ -21,11 +21,11 @@ void readAccel(){
 }
 
 void printAccel(){
-   Serial.print(" | AcX = "); Serial.print(AcX);
-   Serial.print(" | AcY = "); Serial.print(AcY);
-   Serial.print(" | AcZ = "); Serial.print(AcZ);
-   Serial.print(" | Tmp = "); Serial.print(Tmp / 340.00 + 36.53); //equation for temperature in degrees C from datasheet
-   Serial.print(" | GyX = "); Serial.print(GyX);
-   Serial.print(" | GyY = "); Serial.print(GyY);
-   Serial.print(" | GyZ = "); Serial.println(GyZ);
+  Serial.print(" | AcX = "); Serial.print(AcX);
+  Serial.print(" | AcY = "); Serial.print(AcY);
+  Serial.print(" | AcZ = "); Serial.print(AcZ);
+  Serial.print(" | Tmp = "); Serial.print(Tmp / 340.00 + 36.53); //equation for temperature in degrees C from datasheet
+  Serial.print(" | GyX = "); Serial.print(GyX);
+  Serial.print(" | GyY = "); Serial.print(GyY);
+  Serial.print(" | GyZ = "); Serial.println(GyZ);
 }

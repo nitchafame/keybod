@@ -1,7 +1,11 @@
 
 /* ---------------------------
+---------------------------
      Project Body Keyboard 
+     code by Nitcha Fame Tothong x firmread
+     ---------------------------
 --------------------------- */ 
+
 #include "Wire.h"
 #include "CapPin.h"
 #include "Adafruit_MPR121.h"
@@ -10,25 +14,17 @@
 
 
 /* -----------
-    NeoPixels 
------------ */ 
-#define NUMPIXELS      1
-#define PIN            4
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-
-
-/* -----------
-    push button?
------------ */ 
-int delayval = 500; // delay for half a second
-int counter = 0;                  // button push counter
-
-
-/* -----------
     MPU-6050 Accel + Gyro
 ----------- */ 
 const int MPU = 0x68; // I2C address of the MPU-6050
 int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
+
+
+/* -----------
+    Leaning Logics
+----------- */ 
+int delayval = 500; // delay for half a second
+int counter = 0;                  // button push counter
 
 
 /* -----------
@@ -56,7 +52,7 @@ float smoothed[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 
 /* -----------
-    MPR121
+    MPR121 Capacitive Breakouts
 ----------- */  
 // You can have up to 4 on one i2c bus but one is enough for testing!
 Adafruit_MPR121 cap = Adafruit_MPR121();
@@ -67,6 +63,18 @@ uint16_t lasttouched = 0;
 uint16_t currtouched = 0;
 
 
+/* -----------
+    NeoPixels 
+----------- */ 
+#define NUMPIXELS      1
+#define PIN            4
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+
+
+
+
+// ------------------------------------------------------------------
 
 void setup() {
   while (!Serial); 
@@ -77,9 +85,10 @@ void setup() {
   pixels.begin(); // initializes the NeoPixel lib
 }
 
+// ------------------------------------------------------------------
+
 void loop() {
 
-  //-----Notification Input from Sensor
   readAccel();
   printAccel();
   
@@ -115,27 +124,6 @@ void loop() {
       bDidType = false;
       //      Keyboard.println("Good");
     }
-
-
-    //-----Notification Input button
-
-    //if the button state has changed,
-    //    if ((buttonState != previousButtonState)
-    //        // and it's currently pressed:
-    //        && (buttonState == HIGH)) {
-    //      counter++;
-    //      Serial.print("counter : "); Serial.println(counter);
-    //
-    //      //-----Type out a message
-    //      //Keyboard.press(0x82); //hexadecimal value for KEY_LEFT_ALT
-    //      // Keyboard.press(SP);
-    //      Keyboard.print("You just leaned ");
-    //      Keyboard.print(counter);
-    //      Keyboard.println(" times.");
-    //
-    //    } // save the current button state for comparison next time:
-    //    previousButtonState = buttonState;
-
 
     //-----Capacitive sensing
 
