@@ -23,8 +23,9 @@ int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 /* -----------
     Leaning Logics
 ----------- */ 
-int delayval = 500; // delay for half a second
-int counter = 0;                  // button push counter
+int delayval = 500;
+int leanCount = 0;
+boolean bDidType = false;
 
 
 /* -----------
@@ -44,9 +45,8 @@ CapPin pins[] = {cPin_4, cPin_5, cPin_6, cPin_8, cPin_9, cPin_10, cPin_11, cPin_
 // WASD D-pad, select = Return, start = Space, LeftButton = z, RightButton = x
 char Keys[] =   {'x', 'a', ' ', 'd', 'w', 's', KEY_RETURN, KEY_BACKSPACE};
 boolean currentPressed[] = {false, false, false, false, false, false, false, false};
-boolean bDidType = false;
 
-// sensitive or not sensitive enough
+// sensitivity threshold
 #define THRESH 500
 float smoothed[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -92,63 +92,49 @@ void loop() {
   readAccel();
   printAccel();
   
-  for (int i = 0; i < 8; i++) {
-    delay(1);
-    long total1 = 0;
-    long start = millis();
-    long total =  pins[i].readPin(2000);
-    //    int buttonState = digitalRead(buttonPin);
-
-    if (counter > 3) {
-      pixels.setPixelColor(0, pixels.Color(150, 150, 150)); // Moderately bright green color.
+  
+  // lean in
+  if (AcX > 10000) {
+    // haven't count/got notice
+    if (!bDidType) {
+      leanCount++;
+     
+      // led notice
+      pixels.setPixelColor(0, pixels.Color(150, 0, 0)); // Moderately bright red color.
       pixels.show(); // This sends the updated pixel color to the hardware.
       delay(delayval); // Delay for a period of time (in milliseconds).
-    } else {
-
+      
+      // keyboard out notice
+      Keyboard.print("You just leaned ");
+      Keyboard.print(leanCount);
+      Keyboard.println(" times.");
+      
+      bDidType = true;
     }
-    if (AcX > 10000) {
-      if (!bDidType) {
-        counter++;
-       
-          pixels.setPixelColor(0, pixels.Color(150, 0, 0)); // Moderately bright red color.
-          pixels.show(); // This sends the updated pixel color to the hardware.
-          delay(delayval); // Delay for a period of time (in milliseconds).
-        
-        Keyboard.print("You just leaned ");
-        Keyboard.print(counter);
-        Keyboard.println(" times.");
-        bDidType = true;
-      }
-    }
-    else {
-      bDidType = false;
-      //      Keyboard.println("Good");
-    }
-
-    //-----Capacitive sensing
-
-    // check if we are sensing that a finger is touching && that it wasnt already pressed
-    if ((total > THRESH) && (! currentPressed[i]) && (counter > 3)) {
-      Serial.print("Key pressed #"); Serial.print(i);
-      Serial.print(" ("); Serial.print(Keys[i]); Serial.println(")");
-      currentPressed[i] = true;
-      Keyboard.press(Keys[i]);
-    }
-
-    else if ((total <= THRESH) && (currentPressed[i])) {
-      // key was released (no touch, and it was pressed before)
-      Serial.print("Key released #"); Serial.print(i);
-      Serial.print(" ("); Serial.print(Keys[i]); Serial.println(")");
-      currentPressed[i] = false;
-      Keyboard.release(Keys[i]);
-    }
-    delay(5);
   }
+  // lean out
+  else {
+    bDidType = false;
+    // TODO: some feedback loops here
+    //      Keyboard.println("Good");
+  }
+  
+  // led start after 3 leans
+  if (leanCount > 3) {
+    pixels.setPixelColor(0, pixels.Color(150, 150, 150)); // Moderately bright green color.
+    pixels.show(); // This sends the updated pixel color to the hardware.
+    delay(delayval); // Delay for a period of time (in milliseconds).
+  } else {
+
+  }
+  
+  keyboardCapPin();
   
   
   
   printCap();
   //printCapDebug();
+  printCap();
 }
 
 
