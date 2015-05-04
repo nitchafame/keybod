@@ -56,11 +56,14 @@ float smoothed[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 ----------- */  
 // You can have up to 4 on one i2c bus but one is enough for testing!
 Adafruit_MPR121 cap = Adafruit_MPR121();
+Adafruit_MPR121 cap2 = Adafruit_MPR121();
 
 // Keeps track of the last pins touched
 // so we know when buttons are 'released'
 uint16_t lasttouched = 0;
 uint16_t currtouched = 0;
+uint16_t lasttouched2 = 0;
+uint16_t currtouched2 = 0;
 
 
 /* -----------
@@ -81,6 +84,7 @@ void setup() {
   Serial.begin(115200);
   setupAccel();
   setupCap();
+  setupCap2();
   Keyboard.begin(); // initializes the Keyboard lib
   pixels.begin(); // initializes the NeoPixel lib
 }
@@ -90,7 +94,7 @@ void setup() {
 void loop() {
 
   readAccel();
-  printAccel();
+//  printAccel();
   
   
   // lean in
@@ -129,6 +133,7 @@ void loop() {
   //keyboardCapPin();
   
   printCap();
+  printCap2();
   //printCapDebug();
 }
 
