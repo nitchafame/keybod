@@ -9,24 +9,31 @@ void setupCap(){
   }
   Serial.println("MPR121 found!");
   //set touch threshholds (touch, release) - - - default (12, 6);
-  //cap.setThreshholds(12, 6);
+  cap.setThreshholds(40, 6);
 }
-
+// --------
 void setupCap2(){
-  Serial.println("Adafruit MPR121 Capacitive Touch sensor test"); 
-  
-  // Default address is 0x5A, if tied to 3.3V its 0x5B
-  // If tied to SDA its 0x5C and if SCL then 0x5D
+  Serial.println("Adafruit MPR121(2) Capacitive Touch sensor test"); 
+
   if (!cap2.begin(0x5B)) {
     Serial.println("MPR121(2) not found, check wiring?");
     while (1);
   }
   Serial.println("MPR121(2) found!");
-  //set touch threshholds (touch, release) - - - default (12, 6);
-  //cap.setThreshholds(12, 6);
+}
+// --------
+void setupCap3(){
+  Serial.println("Adafruit MPR121(3) Capacitive Touch sensor test"); 
+
+  if (!cap3.begin(0x5C)) {
+    Serial.println("MPR121(3) not found, check wiring?");
+    while (1);
+  }
+  Serial.println("MPR121(3) found!");
 }
 
 
+// ------------------------------------------------------------------
 void printCap(){
   // Get the currently touched pads
   currtouched = cap.touched();
@@ -45,26 +52,39 @@ void printCap(){
   // reset our state
   lasttouched = currtouched;
 }
- 
+// --------
 void printCap2(){
-  // Get the currently touched pads
   currtouched2 = cap2.touched();
-  
+ 
   for (uint8_t i=0; i<12; i++) {
-    // it if *is* touched and *wasnt* touched before, alert!
     if ((currtouched2 & _BV(i)) && !(lasttouched2 & _BV(i)) ) {
       Serial.print(i); Serial.println("(2) touched");
     }
-    // if it *was* touched and now *isnt*, alert!
     if (!(currtouched2 & _BV(i)) && (lasttouched2 & _BV(i)) ) {
       Serial.print(i); Serial.println("(2) released");
     }
   }
 
-  // reset our state
   lasttouched2 = currtouched2;
 }
- 
+// --------
+void printCap3(){
+  currtouched3 = cap3.touched();
+  
+  for (uint8_t i=0; i<12; i++) {
+    if ((currtouched3 & _BV(i)) && !(lasttouched3 & _BV(i)) ) {
+      Serial.print(i); Serial.println("(3) touched");
+    }
+    if (!(currtouched3 & _BV(i)) && (lasttouched3 & _BV(i)) ) {
+      Serial.print(i); Serial.println("(3) released");
+    }
+  }
+
+  lasttouched3 = currtouched3;
+}
+
+
+// ------------------------------------------------------------------
 void printCapDebug(){ 
   // debugging info, what
   Serial.print("\t\t\t\t\t\t\t\t\t\t\t\t\t 0x"); 

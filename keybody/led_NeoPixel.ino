@@ -4,7 +4,10 @@ void setLedMode(int mode){
 
 void ledUpdate(){
   if (ledMode == 0){
-    pixels.setPixelColor(0, pixels.Color(sinAnimateRange(20,255,1), 0, 0)); 
+    float r = sinAnimateRange(20,100,.0005);
+    float g = sinAnimateRange(5,100,.001);
+    float b = sinAnimateRange(0,100,.002);
+    pixels.setPixelColor(0, pixels.Color(r, g, b)); 
     pixels.show();
   }
   else if (ledMode == 1){
@@ -15,6 +18,21 @@ void ledUpdate(){
     pixels.setPixelColor(0, pixels.Color(150, 150, sinAnimateRange(100,255,1))); 
     pixels.show();
   }
+  
+  
+//  switch(ledMode){
+//    case 0: 
+//            pixels.setPixelColor(0, pixels.Color(sinAnimateRange(20,255,1), 0, 0)); 
+//            pixels.show();
+//            break;
+//    case 1: 
+//            pixels.setPixelColor(0, pixels.Color(150, sinAnimateRange(0,40,1), 0)); 
+//            pixels.show();
+//            break;
+//    case 2: pixels.setPixelColor(0, pixels.Color(150, 150, sinAnimateRange(100,255,1))); 
+//            pixels.show();
+//            break;
+//  }
 }
 
 float sinAnimateRange(int minVal, int maxVal, float spd){
@@ -27,6 +45,8 @@ float sinAnimateRange(int minVal, int maxVal, float spd){
 
 
 
-//      pixels.setPixelColor(0, pixels.Color(150, 0, 0)); // Moderately bright red color.
-//      pixels.show(); // This sends the updated pixel color to the hardware.
-//      delay(delayval); // Delay for a period of time (in milliseconds).
+  //  for(int i=0;i<NUMPIXELS;i++){
+  //    pixels.setPixelColor(i, pixels.Color(0,150,0));
+  //    pixels.show();
+  //    delay(delayval);
+  //  }
