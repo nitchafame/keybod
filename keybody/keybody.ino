@@ -152,6 +152,7 @@ void loop() {
         Keyboard.println("This will forces your chest muscles to tighten,");
         Keyboard.println("which pulls your spine forward and rotates your shoulders inward,");
         Keyboard.println("while at the same time weakening the muscles of your upper back that aid in posture.");
+        leanCount = 0;
       }
       
       
