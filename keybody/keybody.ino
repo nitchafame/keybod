@@ -94,10 +94,14 @@ int vibeMode = 0;
 void setup() {
   while (!Serial); 
   Serial.begin(115200);
+  Serial.println("started");
   setupAccel();
+  Serial.println("setup accel done");
   setupCap();
   setupCap2();
   setupCap3();
+  Serial.println("setup cap done");
+  
   pinMode(vibePin, OUTPUT);
   Keyboard.begin(); // initializes the Keyboard lib
   pixels.begin(); // initializes the NeoPixel lib
@@ -112,7 +116,7 @@ void loop() {
   
   
   // lean in
-  if (AcX > 10000) {
+  if (AcX > -11000) {
     // haven't count/got notice
     if (!bDidType) {
       leanCount++;
@@ -120,10 +124,36 @@ void loop() {
       // led notice
       setLedMode(1);
       
-      // keyboard out notice
-      Keyboard.print("You just leaned ");
-      Keyboard.print(leanCount);
-      Keyboard.println(" times.");
+      // out once when lean
+      
+      if (leanCount == 1) {
+        Keyboard.println("");  // new line
+        Keyboard.println("You’ll get hunchback.");
+      }
+      else if (leanCount == 2){
+        Keyboard.println("");
+        Keyboard.println("If you keep hunching like that, you’ll end up with serious condition.");
+      }
+      
+      else if (leanCount == 3){
+        Keyboard.println("");
+        Keyboard.println("You never listen to me.");
+      }
+      else if (leanCount == 4){
+        Keyboard.println("");
+        Keyboard.println("Why do you keep slouching like that?");
+      }
+      else if (leanCount == 5){
+        Keyboard.println("");
+        Keyboard.println("Are you noticing your rounded shoulders with your neck protruding forward?");
+      }
+      else if (leanCount == 6){
+        Keyboard.println("");
+        Keyboard.println("This will forces your chest muscles to tighten,");
+        Keyboard.println("which pulls your spine forward and rotates your shoulders inward,");
+        Keyboard.println("while at the same time weakening the muscles of your upper back that aid in posture.");
+      }
+      
       
       bDidType = true;
     }
@@ -135,9 +165,10 @@ void loop() {
     //      Keyboard.println("Good");
   }
   
-  // led start after 3 leans
-  if (leanCount > 3) {
-    setLedMode(2);
+  // continuous habit while lean 
+  if (leanCount == 1) {
+    //setLedMode(2);
+    
   } else {
 
   }
@@ -146,9 +177,9 @@ void loop() {
   vibeUpdate();
   //keyboardCapPin();
   
-  printCap();
-  printCap2();
-  printCap3();
+  keyInputCap();
+  keyInputCap2();
+  keyInputCap3();
   //printCapDebug();
 }
 
