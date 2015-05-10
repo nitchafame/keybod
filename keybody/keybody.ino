@@ -92,6 +92,9 @@ int vibeMode = 0;
 // ------------------------------------------------------------------
 
 void setup() {
+  pixels.begin(); // initializes the NeoPixel lib
+  pixels.setPixelColor(0, pixels.Color(255, 0, 0)); 
+  pixels.show();
   while (!Serial); 
   Serial.begin(115200);
   Serial.println("started");
@@ -104,9 +107,6 @@ void setup() {
   
   pinMode(vibePin, OUTPUT);
   Keyboard.begin(); // initializes the Keyboard lib
-  pixels.begin(); // initializes the NeoPixel lib
-  pixels.setPixelColor(0, pixels.Color(255, 0, 0)); 
-  pixels.show();
 }
 
 // ------------------------------------------------------------------
