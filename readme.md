@@ -1,4 +1,4 @@
-# keybody
+# keybod
 ### dependencies:  
 * Simple Capacitive Sensing for Arduino https://github.com/moderndevice/CapSense
 * MPR121-based capacitive sensors https://github.com/adafruit/Adafruit_MPR121_Library
