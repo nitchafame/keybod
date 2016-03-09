@@ -21,17 +21,6 @@ int maxima[] = {0, 0};        // actual analogRead maxima for {x, y}
 int axis[] = {xAxis, yAxis};  // pin numbers for {x, y}
 int mouseReading[2];          // final mouse readings for {x, y}
 
-enum gesture {
-  UP,
-  R,
-  DW,
-  L,
-  NONE
-};
-
-gesture comboCW [] = { UP, R, DW, L, UP, R };
-int comboCWcounter = 0;
-
 void setup() {
 
   Wire.begin();
@@ -41,8 +30,6 @@ void setup() {
   Wire.endTransmission(true);
   Serial.begin(9600);
   Mouse.begin();
-
-
 }
 
 void loop() {
@@ -60,35 +47,13 @@ void loop() {
   GyY = Wire.read() << 8 | Wire.read(); // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
   GyZ = Wire.read() << 8 | Wire.read(); // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
 
-  //  Serial.print(" | AcX = "); Serial.print(AcX);
-  //  Serial.print(" | AcY = "); Serial.print(AcY);
-  //  Serial.print(" | AcZ = "); Serial.print(AcZ);
-  //  Serial.print(" | Tmp = "); Serial.print(Tmp / 340.00 + 36.53); //equation for temperature in degrees C from datasheet
-  //  Serial.print(" | GyX = "); Serial.print(GyX);
-  //  Serial.print(" | GyY = "); Serial.print(GyY);
-  //  Serial.print(" | GyZ = "); Serial.println(GyZ);
-
-  gesture currGesture;
-
-  if (AcX > 0 && AcX < 9000 && AcY > 2500 &&  AcY < 5000) {
-    currGesture = UP;
-
-  } else if (AcX > 4500 && AcX < 8000 && AcY > 1000 && AcY < 4500) {
-    currGesture = R;
-
-  } else if (AcX < -8000 && AcX > -14000 && AcY > 1000 && AcY < 5000) {
-    currGesture = DW;
-
-  } else if (AcX < -7000 && AcX > -17000 && AcY > 8000 && AcY < 15000) {
-    currGesture = L;
-    
-  } else {
-    currGesture = NONE;
-  }
-  Serial.print (currGesture);
-
-
-
+  Serial.print(" | AcX = "); Serial.print(AcX);
+  Serial.print(" | AcY = "); Serial.print(AcY);
+  Serial.print(" | AcZ = "); Serial.print(AcZ);
+  Serial.print(" | Tmp = "); Serial.print(Tmp / 340.00 + 36.53); //equation for temperature in degrees C from datasheet
+  Serial.print(" | GyX = "); Serial.print(GyX);
+  Serial.print(" | GyY = "); Serial.print(GyY);
+  Serial.print(" | GyZ = "); Serial.println(GyZ);
 
 
   //mouseMove();
@@ -111,39 +76,24 @@ void loop() {
   }
 
   //-----Actions - Mouse Move
-
-  bool up = AcX > 0 && AcX < 9000 && AcY > 2500 &&  AcY < 5000;
-  bool r = AcX > 4500 && AcX < 8000 && AcY > 1000 && AcY < 4500;
-  bool dw = AcX < -8000 && AcX > -14000 && AcY > 1000 && AcY < 5000;
-  bool l = AcX < -7000 && AcX > -17000 && AcY > 8000 && AcY < 15000;
-
-  int gestureR[] = { up, r, dw, l, up, r, dw};
-
-
-  // Up
-  if (up == true) {
-    Mouse.move(0, -5, 0);
-    // Serial.print("gestureR works!!"); //Serial.print(gestureOne);
-
-  } else {
-    Mouse.move(0, 5, 0);
+  
+  // Right
+  if (AcY < 15000 && AcY > 1500 ) {
+    Mouse.move(20, 1, 3);
   }
-
-
-  //  // Right
-  //  if (AcY < 15000 && AcY > 1500 ) {
-  //    Mouse.move(20, 1, 3);
-  //  }
-  //
-  //  // Down
-  //  else if (AcX < 7000 && AcX > -2000 ) {
-  //    Mouse.move(0, 15, 0);
-  //  }
-  //  // Left
-  //  else if (AcY > -15000 && AcY < -1500 ) {
-  //    Mouse.move(-20, 0, 0);
-  //  }
-
+  // Left
+  else if (AcY > -15000 && AcY < -1500 ) {
+    Mouse.move(-20, 0, 0);
+  }
+ 
+  // Up
+  if (AcX > -7000 && AcX < 2000 ) {
+    Mouse.move(0, -15, 0);
+  }
+  // Down
+  else if (AcX < 7000 && AcX > -2000 ) {
+    Mouse.move(0, 15, 0);
+  }
 
 
 
