@@ -2,24 +2,17 @@
 // By Arduino User JohnChi - August 17, 2014
 // Edit by Nitcha Tothong
 
-#include<Wire.h>
+// OF alt technique
+//https://www.youtube.com/watch?v=6BKTocYpkCw
+//https://github.com/hagino3000/KinectJesture
+
+#include <Wire.h>
+
 int counter = 0;
 const int MPU = 0x68; // I2C address of the MPU-6050
 int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 
 boolean bDidType = false;
-
-const int xAxis = A1;         //analog sensor for X axis
-const int yAxis = A2;         // analog sensor for Y axis
-
-int range = 12;               // output range of X or Y movement
-int responseDelay = 4;        // response delay of the mouse, in ms
-int threshold = range / 4;    // resting threshold
-int center = range / 2;       // resting position value
-int minima[] = {1023, 1023};  // actual analogRead minima for {x, y}
-int maxima[] = {0, 0};        // actual analogRead maxima for {x, y}
-int axis[] = {xAxis, yAxis};  // pin numbers for {x, y}
-int mouseReading[2];          // final mouse readings for {x, y}
 
 void setup() {
 
