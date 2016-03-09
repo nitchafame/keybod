@@ -7,6 +7,7 @@
 //https://github.com/hagino3000/KinectJesture
 
 #include <Wire.h>
+#include <Mouse.h>
 
 int counter = 0;
 const int MPU = 0x68; // I2C address of the MPU-6050
