@@ -87,8 +87,7 @@ void wakeup_routine()
 
 void loop()
 {
-  if (state == state_sleep)
-  {
+  if (state == state_sleep){
     //reset variables ready for next test
     Bean.setLed(0, 0, 0);
     counter_preg = 0;
@@ -133,14 +132,11 @@ void loop()
   valNot = digitalRead(pinNot);
 
   //time how long ago module may be disconnected
-  if (valClock == 1)  //if 0 for too long (meaning module disconnected), go back to sleep
-  {
+  if (valClock == 1) { //if 0 for too long (meaning module disconnected), go back to sleep
     timer_pinClock = millis();
   }
-  else
-  {
-    if ((millis() - timer_pinClock) > 8000)  //sleep after 8 seconds disconnected
-    {
+  else{
+    if ((millis() - timer_pinClock) > 8000){  //sleep after 8 seconds disconnected
       state = state_sleep;
     }
   }
@@ -149,116 +145,90 @@ void loop()
   //---------------------------------------------
   if (state == state_testing)
   {
-    if (valClock != valNot) //"Not" is being displayed
-    {
-      if (counter_not < 7)
-      {
+    if (valClock != valNot) { //"Not" is being displayed
+      if (counter_not < 7) {
         counter_not++;
       }
     }
-    else  //"Not" isn't being displayed
-    {
-      if (counter_not > -7)
-      {
+    else {  //"Not" isn't being displayed
+      if (counter_not > -7){
         counter_not--;
       }
-
-      if (counter_not < -2)
-      {
+      if (counter_not < -2){
         timer_display_not = millis();
       }
     }
 
 
-    if (valClock != valPreg)  //"Pregnant" is being displayed
-    {
-      if (counter_preg < 7)
-      {
+    if (valClock != valPreg) { //"Pregnant" is being displayed
+      if (counter_preg < 7){ 
         counter_preg++;
       }
     }
-    else  //"Prenant" not being displayed
-    {
-      if (counter_preg > -7)
-      {
+    else {  //"Prenant" not being displayed
+      if (counter_preg > -7){
         counter_preg--;
       }
-
-      if (counter_preg < -2)
-      {
+      if (counter_preg < -2) {
         timer_display_preg = millis();
       }
     }
 
     //watch accelerometer
-    if ((millis() - timer_read_acc) > 3000)   //read accelerometer every 3 seconds
-    {
+    if ((millis() - timer_read_acc) > 3000){   //read accelerometer every 3 seconds
       timer_read_acc = millis();
-
       accel = Bean.getAcceleration();
       y_raw = accel.yAxis;
-
     }
 
     //transition state
-    if ((counter_preg > lcd_pos_count) || (counter_not > lcd_pos_count))
-    {
+    if ((counter_preg > lcd_pos_count) || (counter_not > lcd_pos_count)){
       unsigned long current_time = millis();
-      if (( (current_time - timer_display_preg) > lcd_pos_timer) || ((current_time - timer_display_not) > lcd_pos_timer))
-      {
+      if (( (current_time - timer_display_preg) > lcd_pos_timer) || ((current_time - timer_display_not) > lcd_pos_timer)){
 
-        if (counter_preg > 0)
-        {
+        if (counter_preg > 0){
           flag_preg = 1;
         }
-        else
-        {
+        else{
           flag_preg = 0;
         }
 
-        if (counter_not > 0)
-        {
+        if (counter_not > 0){
           flag_not = 1;
         }
-        else
-        {
+        else{
           flag_not = 0;
         }
-
         state = state_result;
       }
     } //end if transition
 
+
     //B, BL, BLU, BLUE
-    if ((millis() - timer_testing_blue) > 100)    //update LED ~10Hz.  Random
-    {
+    if ((millis() - timer_testing_blue) > 100) {   //update LED ~10Hz.  Random
+    
       timer_testing_blue = millis();
-      if (flag_led_increase == 1)
-      {
+      if (flag_led_increase == 1){
         testing_led_intensity = testing_led_intensity + 20;
       }
-      else
-      {
+      else{
         testing_led_intensity = testing_led_intensity - 20;
       }
 
       //Bean.setLed(0, 0, testing_led_intensity);   //blue
 
-      if (y_raw > -210)
-      {
+      if (y_raw > -210){
         Bean.setLed(0, 0, testing_led_intensity);   //blue
       }
       else  //upside down, solid blue
         Bean.setLed(0, 0, blue);
 
       //flip bright to dim
-      if ((testing_led_intensity > 230) && (flag_led_increase == 1))
-      {
+      if ((testing_led_intensity > 230) && (flag_led_increase == 1)){
         flag_led_increase = 0;
         //Serial.println("flip 0");
       }
-      else if ((testing_led_intensity < 20) && (flag_led_increase == 0))
-      {
+      else if ((testing_led_intensity < 20) && (flag_led_increase == 0)){
         flag_led_increase = 1;
         //Serial.println("flip 1");
       }
@@ -272,28 +242,24 @@ void loop()
 
 
 
-  if (state == state_result)
-  {
+  if (state == state_result){
     uint8_t blink_red = 0;
     uint8_t blink_green = 0;
     uint8_t blink_blue = 0;
 
     //transmit results
-    if ( (flag_preg) & (flag_not) )  //not pregnant
-    {
+    if ( (flag_preg) & (flag_not) ) { //not pregnant
       Serial.println("11"); //arbitrary code for not pregnant
       blink_red = 255;
       blink_green = 0;
     }
 
-    else if ((flag_preg) & (!flag_not))  //pregnant
-    {
+    else if ((flag_preg) & (!flag_not)) { //pregnant
       Serial.println("12"); //arbitrary code for pregnant
       blink_red = 0;
       blink_green = 255;
     }
-    else  //not possible
-    {
+    else { //not possible
       Serial.println("20"); //arbitrary code for error
       blink_red = 255;
       blink_green = 255;

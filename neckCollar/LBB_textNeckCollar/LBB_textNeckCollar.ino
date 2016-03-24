@@ -49,6 +49,10 @@ void setup() {
   Serial.begin(9600);
 }
 
+void wakeUpRoutine() {
+  // sth to do right after waking up
+}
+
 void loop() {
   if (state == state_sleep) {
     //reset variables
@@ -58,7 +62,8 @@ void loop() {
     // This is an external library, so you don't need the prefix "Bean"
 
     //attach interrupt before sleep, detach interrupt after wake
-    attachPinChangeInterrupt(0, pinChanged, CHANGE);
+    attachPinChangeInterrupt(A0, wakeUpRoutine, FALLING);
+//    attachPinChangeInterrupt(A0, wakeUpRoutine, RISING);
     Bean.sleep(MAX_BEAN_SLEEP);
 
     //upon wake up, assume in test mode
