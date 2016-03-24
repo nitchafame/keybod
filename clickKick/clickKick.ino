@@ -3,8 +3,8 @@
 // Edit by Nitcha Tothong
 
 // OF alt technique
-//https://www.youtube.com/watch?v=6BKTocYpkCw
-//https://github.com/hagino3000/KinectJesture
+// https://www.youtube.com/watch?v=6BKTocYpkCw
+// https://github.com/hagino3000/KinectJesture
 
 #include <Wire.h>
 #include <Mouse.h>
@@ -52,42 +52,36 @@ void loop() {
 
   //-----Actions - Click
 
-  if (AcX > 10000) {
-    if (!bDidType) {
-      counter++;
-      Mouse.click();
-      Mouse.end();
-      bDidType = true;
-    }
+  if (AcX > 10000 && !bDidType) {
+    counter++;
+    Mouse.click();
+    Mouse.end();
+    bDidType = true;
+    delay(100);
   }
   else {
     bDidType = false;
-    //      Keyboard.println("Good");
   }
 
   //-----Actions - Mouse Move
-  
+
   // Right
   if (AcY < 15000 && AcY > 1500 ) {
-    Mouse.move(20, 1, 3);
+    Mouse.move(2, 0, 0);
   }
   // Left
   else if (AcY > -15000 && AcY < -1500 ) {
-    Mouse.move(-20, 0, 0);
+    Mouse.move(-2, 0, 0);
   }
- 
+
   // Up
   if (AcX > -7000 && AcX < 2000 ) {
-    Mouse.move(0, -15, 0);
+    Mouse.move(0, -2, 0);
   }
   // Down
   else if (AcX < 7000 && AcX > -2000 ) {
-    Mouse.move(0, 15, 0);
+    Mouse.move(0, 2, 0);
   }
 
-
-
-
-  delay(103);
 }
 
