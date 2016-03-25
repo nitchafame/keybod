@@ -38,19 +38,16 @@ int16_t y_raw = 0;
 
 bool isConnected = 0;
 
-void pinChanged() {
-  Bean.setLed(0, 255, 0);
-  Bean.sleep(100);
-  Bean.setLed(0, 0, 0);
-}
-
 void setup() {
- state = state_sleep;
+  state = state_sleep;
   Serial.begin(9600);
 }
 
 void wakeUpRoutine() {
   // sth to do right after waking up
+  Bean.setLed(0, 255, 0);
+  Bean.sleep(100);
+  Bean.setLed(0, 0, 0);
 }
 
 void loop() {

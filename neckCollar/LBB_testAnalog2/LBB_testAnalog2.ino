@@ -14,10 +14,9 @@ void loop() {
 
   // map smoothedA0 to LED
   int mappedForLed = map(smoothedA0, 700, 1000, 0, 255);
-  Bean.setLed(mappedForLed, 0, 255 - mappedForLed);
-  //red for high value
-  //green for low value
-  //what does high vs low means? which one is looking down?
+  Bean.setLed(mappedForLed, 255 - mappedForLed, 0);  
+  //Text neck posture (bend neck down) : close 1000 : red
+  //fixing  posture (look up) : close to 700 : green
 
   // update for next loop
   prevA0 = smoothedA0;
