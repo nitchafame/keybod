@@ -31,9 +31,10 @@
 #include "Adafruit_BluefruitLE_UART.h"
 #include "BluefruitConfig.h"
 
-int counter = 0;
+//int counter = 0;
 const int MPU = 0x68; // I2C address of the MPU-6050
-int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
+//int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
+int8_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 
 boolean bDidType = false;
 
@@ -166,9 +167,9 @@ void setup(void)
     @brief  Constantly poll for new command or response data
 */
 /**************************************************************************/
-void loop(void){
-  
-   //-----Notification Input from Sensor
+void loop(void) {
+
+  //-----Notification Input from Sensor
   Wire.beginTransmission(MPU);
   Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
   Wire.endTransmission(false);
@@ -180,15 +181,27 @@ void loop(void){
   GyX = Wire.read() << 8 | Wire.read(); // 0x43 (GYRO_XOUT_H) & 0x44 (GYRO_XOUT_L)
   GyY = Wire.read() << 8 | Wire.read(); // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
   GyZ = Wire.read() << 8 | Wire.read(); // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
+
+  Serial.print(" | AcX = "); Serial.print(AcX);
+  Serial.print(" | AcY = "); Serial.print(AcY);
+  Serial.print(" | AcZ = "); Serial.print(AcZ);
+  Serial.print(" | Tmp = "); Serial.print(Tmp / 340.00 + 36.53); //equation for temperature in degrees C from datasheet
+  Serial.print(" | GyX = "); Serial.print(GyX);
+  Serial.print(" | GyY = "); Serial.print(GyY);
+  Serial.print(" | GyZ = "); Serial.println(GyZ);
   
   Serial.println(F("x,y = "));
 
   // Check for user input and echo it back if anything was found
   char input[BUFSIZE + 1];
-  getUserInput(input, BUFSIZE);
+  //getUserInput(input, BUFSIZE);
 
   Serial.println(input);
 
+  /* ----------Mouse Action
+     BLE Services for Command mode
+     https://learn.adafruit.com/introducing-adafruit-ble-bluetooth-low-energy-friend/ble-services#at-plus-blehidmousemove
+  */
   // Press (and hold) the Left mouse's button
   if ( ble.sendCommandCheckOK(F("AT+BleHidMouseButton=L,press")) )
   {
@@ -196,11 +209,21 @@ void loop(void){
     delay(250);
 
     // Mouse moves according to the user's input
-    ble.print(F("AT+BleHidMouseMove="));
-    ble.println(input);
+    // Parameter: X Ticks (+/-), Y Ticks (+/-), Scroll Wheel (+/-), Pan Wheel (+/-)
 
-    if ( ble.waitForOK() )
-    {
+    //Right
+    if (input) {
+      ble.print(F("AT+BleHidMouseMove= 2,,,"));
+      ble.println(input);
+    }
+
+    //Up
+    if(input){
+      ble.print(F("AT+BleHidMouseMove= ,-2,,"));
+      ble.println(input);
+      }
+    
+    if ( ble.waitForOK() ){
       Serial.println( F("OK!") );
     } else
     {
@@ -209,7 +232,7 @@ void loop(void){
 
     // Way for user to release left button
     Serial.println(F("Enter anything to release Left Button") );
-    getUserInput(input, BUFSIZE);
+//    getUserInput(input, BUFSIZE);
 
     // Release the Left mouse's button
     ble.sendCommandCheckOK(F("AT+BleHidMouseButton=0"));
@@ -225,18 +248,19 @@ void loop(void){
     @brief  Checks for user input (via the Serial Monitor)
 */
 /**************************************************************************/
-void getUserInput(char buffer[], uint8_t maxSize)
-{
-  memset(buffer, 0, maxSize);
-  while ( Serial.available() == 0 ) {
-    delay(1);
-  }
-
-  uint8_t count = 0;
-
-  do
-  {
-    count += Serial.readBytes(buffer + count, maxSize);
-    delay(2);
-  } while ( (count < maxSize) && !(Serial.available() == 0) );
-}
+//void getUserInput(char buffer[], uint8_t maxSize)
+//{
+//  // Sets the first num bytes of the block of memory pointed
+//  memset(buffer, 0, maxSize);
+//  while ( Serial.available() == 0 ) {
+//    delay(1);
+//  }
+//
+//  uint8_t count = 0;
+//
+//  do
+//  {
+//    count += Serial.readBytes(buffer + count, maxSize);
+//    delay(2);
+//  } while ( (count < maxSize) && !(Serial.available() == 0) );
+//}
