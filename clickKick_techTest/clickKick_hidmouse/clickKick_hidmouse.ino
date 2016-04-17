@@ -190,7 +190,7 @@ void loop(void) {
   Serial.print(" | GyY = "); Serial.print(GyY);
   Serial.print(" | GyZ = "); Serial.println(GyZ);
   
-  Serial.println(F("x,y = "));
+  //Serial.println(F("x,y = "));
 
   // Check for user input and echo it back if anything was found
   char input[BUFSIZE + 1];
@@ -212,7 +212,7 @@ void loop(void) {
     // Parameter: X Ticks (+/-), Y Ticks (+/-), Scroll Wheel (+/-), Pan Wheel (+/-)
 
     //Right
-    if (input) {
+    if (AcY > 0) {
       ble.print(F("AT+BleHidMouseMove= 2,,,"));
       ble.println(input);
     }
