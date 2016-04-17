@@ -1,7 +1,7 @@
 int prevA0;
 int smoothedA0;
 
-float speed = 0.1;
+float smoothSpeed = 0.1;
 
 void setup() {
   Serial.begin(9600);
@@ -9,7 +9,7 @@ void setup() {
 
 void loop() {
   // get zeno smoothed A0
-  smoothedA0 = prevA0 * (1 - speed) + analogRead(A0) * speed;
+  smoothedA0 = prevA0 * (1 - smoothSpeed) + analogRead(A0) * smoothSpeed;
   Serial.println(smoothedA0);
 
   // map smoothedA0 to LED

@@ -12,8 +12,6 @@
 #include <PinChangeInt.h>
 #define MAX_BEAN_SLEEP 4294967295
 
-
-
 //define pins
 static uint8_t pinClock = 0;  //pin for LCD clock
 static uint8_t pinNot = 1;    //pin for "Not" text
@@ -134,7 +132,7 @@ void loop()
   //time how long ago module may be disconnected
   if (valClock == 1) { //if 0 for too long (meaning module disconnected), go back to sleep
     timer_pinClock = millis();
-  }
+  } 
   else{
     if ((millis() - timer_pinClock) > 8000){  //sleep after 8 seconds disconnected
       state = state_sleep;

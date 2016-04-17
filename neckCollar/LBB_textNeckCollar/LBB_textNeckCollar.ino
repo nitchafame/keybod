@@ -12,14 +12,18 @@
 #include <PinChangeInt.h>
 #define MAX_BEAN_SLEEP 0xFFFFFFFF
 
-int prevAnalog0;
+// bend sensor variables
+int prevA0;
+int currentA0;
+int smoothedA0;
+float smoothSpeed = 0.1;
 
 //define pins
 uint8_t state;
 static uint8_t state_sleep = 0;   //wait for wake up pin (LCD clock)
 static uint8_t state_textNeck = 1;  //transmit results
-static uint8_t state_trigger = 2; // fix posture
-static uint8_t state_idle = 3;    //wait for disconnect
+static uint8_t state_triggerMsg = 2; // fix posture
+static uint8_t state_waitForFixedPosture = 3;    //wait for disconnect
 
 uint8_t valClock;
 
@@ -43,24 +47,16 @@ void setup() {
   Serial.begin(9600);
 }
 
-void wakeUpRoutine() {
-  // sth to do right after waking up
-  Bean.setLed(0, 255, 0);
-  Bean.sleep(100);
-  Bean.setLed(0, 0, 0);
-}
 
 void loop() {
   if (state == state_sleep) {
     //reset variables
     Bean.setLed(0, 0, 0);
 
-    // run pinChanged when something changes on D0
+    // run pinChanged when something changes on A0
     // This is an external library, so you don't need the prefix "Bean"
-
-    //attach interrupt before sleep, detach interrupt after wake
-    attachPinChangeInterrupt(A0, wakeUpRoutine, FALLING);
-//    attachPinChangeInterrupt(A0, wakeUpRoutine, RISING);
+    // attach interrupt before sleep, detach interrupt after wake
+    attachPinChangeInterrupt(A0, wakeUpRoutine, RISING);
     Bean.sleep(MAX_BEAN_SLEEP);
 
     //upon wake up, assume in test mode
@@ -69,4 +65,15 @@ void loop() {
 
     timer_pinClock = millis();
   }
+  
+  if (state == state_textNeck){
+    
+  }
+  if (state == state_triggerMsg){
+    
+  }
+  if (state == state_waitForFixedPosture){
+    
+  }
+
 }
