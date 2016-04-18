@@ -6,8 +6,6 @@
 
 
 
-
-
 -----
 # research
 * RF24 wireless
