@@ -84,8 +84,7 @@ void error(const __FlashStringHelper*err) {
             automatically on startup)
 
   /**************************************************************************/
-void setup(void)
-{
+void setup(void) {
   while (!Serial);  // required for Flora & Micro
   delay(500);
 
@@ -103,14 +102,12 @@ void setup(void)
   /* Initialise the module */
   Serial.print(F("Initialising the Bluefruit LE module: "));
 
-  if ( !ble.begin(VERBOSE_MODE) )
-  {
+  if ( !ble.begin(VERBOSE_MODE) ) {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
   Serial.println( F("OK!") );
 
-  if ( FACTORYRESET_ENABLE )
-  {
+  if ( FACTORYRESET_ENABLE ) {
     /* Perform a factory reset to make sure everything is in a known state */
     Serial.println(F("Performing a factory reset: "));
     if ( ! ble.factoryReset() ) {
@@ -132,8 +129,7 @@ void setup(void)
   }
 
   // This demo only available for firmware from 0.6.6
-  if ( !ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
-  {
+  if ( !ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) ) {
     error(F("This sketch requires firmware version " MINIMUM_FIRMWARE_VERSION " or higher!"));
   }
 
@@ -189,7 +185,7 @@ void loop(void) {
   Serial.print(" | GyX = "); Serial.print(GyX);
   Serial.print(" | GyY = "); Serial.print(GyY);
   Serial.print(" | GyZ = "); Serial.println(GyZ);
-  
+
   //Serial.println(F("x,y = "));
 
   // Check for user input and echo it back if anything was found
@@ -203,8 +199,7 @@ void loop(void) {
      https://learn.adafruit.com/introducing-adafruit-ble-bluetooth-low-energy-friend/ble-services#at-plus-blehidmousemove
   */
   // Press (and hold) the Left mouse's button
-  if ( ble.sendCommandCheckOK(F("AT+BleHidMouseButton=L,press")) )
-  {
+  if ( ble.sendCommandCheckOK(F("AT+BleHidMouseButton=L,press")) ) {
     // delay a bit
     delay(250);
 
@@ -218,26 +213,28 @@ void loop(void) {
     }
 
     //Up
-    if(input){
+    if (input) {
       ble.print(F("AT+BleHidMouseMove= ,-2,,"));
       ble.println(input);
-      }
-    
-    if ( ble.waitForOK() ){
+    }
+
+    if ( ble.waitForOK() ) {
       Serial.println( F("OK!") );
-    } else
-    {
+    }
+
+    else {
       Serial.println( F("FAILED!") );
     }
 
     // Way for user to release left button
     Serial.println(F("Enter anything to release Left Button") );
-//    getUserInput(input, BUFSIZE);
+    //    getUserInput(input, BUFSIZE);
 
     // Release the Left mouse's button
     ble.sendCommandCheckOK(F("AT+BleHidMouseButton=0"));
-  } else
-  {
+  }
+
+  else {
     // Failed, probably pairing is not complete yet
     Serial.println( F("Please make sure Bluefruit is paired and try again") );
   }
@@ -248,8 +245,7 @@ void loop(void) {
     @brief  Checks for user input (via the Serial Monitor)
 */
 /**************************************************************************/
-//void getUserInput(char buffer[], uint8_t maxSize)
-//{
+//void getUserInput(char buffer[], uint8_t maxSize){
 //  // Sets the first num bytes of the block of memory pointed
 //  memset(buffer, 0, maxSize);
 //  while ( Serial.available() == 0 ) {
@@ -258,8 +254,7 @@ void loop(void) {
 //
 //  uint8_t count = 0;
 //
-//  do
-//  {
+//  do{
 //    count += Serial.readBytes(buffer + count, maxSize);
 //    delay(2);
 //  } while ( (count < maxSize) && !(Serial.available() == 0) );
