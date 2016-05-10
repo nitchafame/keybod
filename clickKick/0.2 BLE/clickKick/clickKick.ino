@@ -24,6 +24,13 @@ int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 //int8_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 boolean bDidType = false;
 
+//for smoothing
+float smAcX, smAcY, smAcZ, smTmp, smGyX, smGyY, smGyZ;
+float smSpeed = 0.025;
+
+//pitch & roll calculation
+
+float pitch, roll;
 
 // A small error handling helper
 void error(const __FlashStringHelper*err) {
@@ -129,15 +136,35 @@ void loop(void) {
   // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
   GyZ = Wire.read() << 8 | Wire.read();
   
-  Serial.print(" | AcX = "); Serial.print(AcX);
-  Serial.print(" | AcY = "); Serial.print(AcY);
-  Serial.print(" | AcZ = "); Serial.print(AcZ);
-  //equation for temperature in degrees C from datasheet
-  Serial.print(" | Tmp = "); Serial.print(Tmp / 340.00 + 36.53);
-  Serial.print(" | GyX = "); Serial.print(GyX);
-  Serial.print(" | GyY = "); Serial.print(GyY);
-  Serial.print(" | GyZ = "); Serial.println(GyZ);
+//  Serial.print(" | AcX = "); Serial.print(AcX);
+//  Serial.print(" | AcY = "); Serial.print(AcY);
+//  Serial.print(" | AcZ = "); Serial.print(AcZ);
+//  //equation for temperature in degrees C from datasheet
+//  Serial.print(" | Tmp = "); Serial.print(Tmp / 340.00 + 36.53);
+//  Serial.print(" | GyX = "); Serial.print(GyX);
+//  Serial.print(" | GyY = "); Serial.print(GyY);
+//  Serial.print(" | GyZ = "); Serial.println(GyZ);
+
+  smAcX = smooth(AcX, smSpeed, smAcX);
+  smAcY = smooth(AcY, smSpeed, smAcY);
+  smAcZ = smooth(AcZ, smSpeed, smAcZ);
+  smTmp = smooth(Tmp, smSpeed, smTmp);
+  smGyX = smooth(GyX, smSpeed, smGyX);
+  smGyY = smooth(GyY, smSpeed, smGyY);
+  smGyZ = smooth(GyZ, smSpeed, smGyZ);
+
   
+  // apply trigonometry to get the pitch and roll:
+  pitch = atan(smAcX/sqrt(pow(smAcY,2) + pow(smAcZ,2)));
+  roll = atan(smAcY/sqrt(pow(smAcX,2) + pow(smAcZ,2)));
+  
+  //convert radians into degrees
+  pitch = pitch * (180.0/PI);
+  roll = roll * (180.0/PI) ;
+
+  Serial.print(pitch);
+  Serial.print(",");
+  Serial.println(roll);
   
   /* 
    
@@ -146,15 +173,40 @@ void loop(void) {
   
    */
   
-  
+  // Mouse moves according to the user's input
+  // Parameter: X Ticks (+/-), Y Ticks (+/-), Scroll Wheel (+/-), Pan Wheel (+/-)
+  int xMove = 0; 
+  int yMove = 0;
+  if (roll > 20 || roll < -20){
+    if (roll > 20) xMove = map(roll, 20, 80, 1, 10);
+    else if (roll < -20) xMove = map(roll, -20, -80, -1, -10);
+    
+//    if ( ble.waitForOK() ) Serial.println( F("OK!") );
+//    else Serial.println( F("FAILED!") );
+  }
+
+  if (pitch > 20 || pitch < -20){
+    if (pitch > 20) yMove = map(pitch, 5, 80, -1, -10);
+    else if (pitch < -20) yMove = map(pitch, -30, -80, 1, 10);
+    
+  }
+
+  if (xMove != 0 || yMove != 0){
+    ble.print(F("AT+BleHidMouseMove="));
+    ble.print(xMove);
+    ble.print(F(","));
+    ble.print(yMove);
+    ble.println(F(",,"));
+    
+    if ( ble.waitForOK() ) Serial.println( F("OK!") );
+    else Serial.println( F("FAILED!") );
+  }
   
   // Press (and hold) the Left mouse's button
 //  if ( ble.sendCommandCheckOK(F("AT+BleHidMouseButton=L,press")) ) {
     // delay a bit
 //    delay(250);
     
-    // Mouse moves according to the user's input
-    // Parameter: X Ticks (+/-), Y Ticks (+/-), Scroll Wheel (+/-), Pan Wheel (+/-)
     
     //Right
 //    if (AcY > 0) {
@@ -174,3 +226,14 @@ void loop(void) {
 //  }
 }
 
+
+
+
+
+//----- Simple lowpass filter
+// requires recycling the output in the "smoothedVal" param
+
+float smooth(int data, float filterVal, float smoothedVal) {
+  smoothedVal = (smoothedVal * (1 - filterVal)) + (data  *  filterVal);
+  return smoothedVal;
+}
