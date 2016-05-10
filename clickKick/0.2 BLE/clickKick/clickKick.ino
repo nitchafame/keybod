@@ -20,8 +20,8 @@ Adafruit_BluefruitLE_UART ble(BLUEFRUIT_HWSERIAL_NAME, BLUEFRUIT_UART_MODE_PIN);
 // accel stuffs
 // I2C address of the MPU-6050
 const int MPU = 0x68;
-//int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
-int8_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
+int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
+//int8_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 boolean bDidType = false;
 
 
@@ -166,7 +166,7 @@ void loop(void) {
     
     // Release the Left mouse's button
     // ble.sendCommandCheckOK(F("AT+BleHidMouseButton=0"));
-  }
+//  }
   
 //  else {
     // Failed, probably pairing is not complete yet
