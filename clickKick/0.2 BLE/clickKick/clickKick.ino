@@ -55,8 +55,8 @@ void error(const __FlashStringHelper*err) {
 void setup(void) {
   
   // required for Flora & Micro
-  while (!Serial);
-  delay(500);
+//  while (!Serial);
+//  delay(500);
   
   // for accel
   Wire.begin();
